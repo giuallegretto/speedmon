@@ -22,6 +22,9 @@ SpeedMon esegue speed test a intervalli regolari, salva lo storico e ti mostra u
 - Confronto periodo su periodo, test manuale on-demand, export dei dati
 - API REST per interrogare tutto da fuori
 
+## Perché l'ho fatto
+Volevo tenere d'occhio la mia connessione, capire se andava davvero alla velocità che pago e se il provider rispettava il contratto, soprattutto la sera quando sembrava rallentare. Esistono già strumenti per gli speed test, ma nessuno faceva esattamente quello che cercavo — girare sul mio server, salvarsi lo storico, avvisarmi quando qualcosa non andava e dirmi quanto della banda promessa ricevo davvero. Così ho deciso di costruirmelo. SpeedMon è nato per uso personale sul mio homelab, e l'ho reso pubblico nel caso tornasse utile anche a qualcun altro con la stessa esigenza.
+
 ## Screenshot
 
 ### Dashboard
