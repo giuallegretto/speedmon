@@ -49,12 +49,12 @@ Contratto, motore, server, soglie orarie a fasce, notifiche e report — tutto c
 ## Avvio rapido (Docker)
 
 ```bash
-git clone https://github.com/<tuo-utente>/speedmon.git
+git clone https://github.com/giuallegretto/speedmon.git
 cd speedmon
 docker compose up -d --build
 ```
 
-Apri **http://<indirizzo-del-server>:8765**.
+Apri **http://INDIRIZZO-DEL-SERVER:8765**.
 
 I dati (database e impostazioni) restano nella cartella `./data`, montata come volume. Per un backup basta copiare quella cartella.
 
