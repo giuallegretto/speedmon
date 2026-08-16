@@ -1,0 +1,10 @@
+services:
+  speedmon:
+    build: .
+    image: speedmon:latest
+    container_name: speedmon
+    restart: unless-stopped
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./data:/app/data      # persistenza SQLite + impostazioni
