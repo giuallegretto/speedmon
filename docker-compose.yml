@@ -6,5 +6,7 @@ services:
     restart: unless-stopped
     ports:
       - "8765:8765"
+    environment:
+      - TZ=Europe/Rome      # fuso orario: le fasce orarie seguono l'ora italiana
     volumes:
       - ./data:/app/data      # persistenza SQLite + impostazioni
