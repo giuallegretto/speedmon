@@ -39,15 +39,14 @@ def run_measurement() -> dict:
         # valutazione soglie -> notifica
         violations = notify.check_thresholds(result, settings)
         if violations:
-            body = "\n".join(f"- {v}" for v in violations)
-            body += f"\n\nServer: {result.get('server')}\nOrario: {datetime.now():%d/%m %H:%M}"
-            notify.dispatch(settings, "SpeedMon - soglia superata", body)
+            subject, email_body, tg_body, email_html = notify.build_threshold_msg(result, violations)
+            notify.dispatch(settings, subject, email_body, tg_body, email_html)
         return {"id": rid, "ok": True, "violations": violations, **result}
     except SpeedtestError as e:
         db.insert_result({"engine": engine_name}, ok=False, error=str(e))
         # avvisa del fallimento
-        notify.dispatch(settings, "SpeedMon - test fallito",
-                        f"Il test e' fallito: {e}\nOrario: {datetime.now():%d/%m %H:%M}")
+        subject, email_body, tg_body, email_html = notify.build_failure_msg(engine_name, str(e))
+        notify.dispatch(settings, subject, email_body, tg_body, email_html)
         return {"ok": False, "error": str(e)}
 
 
@@ -61,25 +60,15 @@ def send_report() -> None:
     s = db.get_stats(hours)
     outages = db.get_outages(hours)
     period = "settimanale" if hours == 168 else "mensile"
-    lines = [
-        f"Report {period} SpeedMon",
-        f"Periodo: ultime {hours // 24} giornate",
-        "",
-        f"Download medio: {s['download']['avg']} Mbps (min {s['download']['min']}, max {s['download']['max']})",
-        f"Upload medio:   {s['upload']['avg']} Mbps",
-        f"Ping medio:     {s['ping']['avg']} ms",
-        f"Uptime:         {s['uptime_pct']}%  ({s['failed_tests']} test falliti su {s['total_tests']})",
-        f"Interruzioni:   {len(outages)}",
-    ]
     contract = settings.get("contract_download")
+    pct = None
     if contract and s["download"]["avg"]:
         pct = round(s["download"]["avg"] / contract * 100)
-        lines.append(f"Rispetto contratto: {pct}% dei {contract} Mbps promessi")
-    body = "\n".join(lines)
+    subject, body, html = notify.build_report_msg(s, len(outages), period, pct, contract)
     email_cfg = settings.get("notify", {}).get("email", {})
     cfg = {**email_cfg, "to": rep["to"]}
     try:
-        notify.send_email(cfg, f"SpeedMon - report {period}", body)
+        notify.send_email(cfg, subject, body, html=html)
     except Exception:  # noqa: BLE001
         pass
 
