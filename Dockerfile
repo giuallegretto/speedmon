@@ -14,7 +14,7 @@ WORKDIR /app
 # Per usare SOLO LibreSpeed puoi rimuovere questo blocco.
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg \
  && curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash \
- && apt-get install -y speedtest \
+ && apt-get install -y speedtest tzdata \
  && apt-get purge -y gnupg && apt-get autoremove -y \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
